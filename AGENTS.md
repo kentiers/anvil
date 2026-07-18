@@ -234,6 +234,8 @@ Non-trivial runtime changes require:
 - allocation and complexity notes;
 - realistic payload sizes.
 
+For every non-trivial change, review source fit, trust-boundary impact, lifecycle ownership, hot-path allocations, and time complexity before merge. Record a benchmark or rule only for observed recurring risk; do not encode speculative preferences.
+
 Forbidden:
 
 - global Heartbeat loops without measured need;

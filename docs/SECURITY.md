@@ -36,6 +36,8 @@ Default network schema behavior:
 - reject arbitrary Instances unless explicitly configured;
 - return stable, non-secret error codes.
 
+`Schema.instance` is opt-in and requires both non-empty `classNames` and an `ancestor` Instance. An accepted Instance must satisfy an allowed class through `IsA` and be that ancestor or its descendant. This validates reference shape only; domain code still validates ownership and game rules.
+
 ## Error Policy
 
 Client-facing errors use stable codes and safe messages:

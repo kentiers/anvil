@@ -47,6 +47,12 @@ powershell -ExecutionPolicy Bypass -File scripts/benchmark-action.ps1
 
 This benchmark reports one local measurement only. Record manual comparison, payload size, and diagnostics state before making a performance claim.
 
+Measure Roblox datatype and Instance-policy schema overhead:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/benchmark-schema-roblox.ps1
+```
+
 GitHub-hosted CI runs formatting, linting, and type analysis. It does not run Roblox Studio: Studio's GUI installer and plugin execution require an interactive desktop session. Run `scripts/test.ps1` locally before opening a pull request.
 
 Verify the failure exit contract without committing a failing spec:
