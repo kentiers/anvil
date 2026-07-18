@@ -4,10 +4,10 @@ registry = "test"
 
 [[package]]
 name = "kentiers/anvil"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = []
 
 [[package]]
 name = "kentiers/anvil-consumer-smoke"
-version = "0.1.2"
-dependencies = [["Anvil", "kentiers/anvil@0.1.2"]]
+version = "0.1.3"
+dependencies = [["Anvil", "kentiers/anvil@0.1.3"]]
