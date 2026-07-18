@@ -70,5 +70,54 @@ return function()
             assert(union:parse(3).ok, "union must accept later option")
             assert(not union:parse(true).ok, "union must reject unmatched values")
         end)
+
+        it("validates Roblox datatypes and constrained Instances", function()
+            local workspace = game:GetService("Workspace")
+            local lighting = game:GetService("Lighting")
+            local terrain = workspace.Terrain
+            local vector = lighting:GetSunDirection()
+            local frame = workspace:GetPivot()
+            local color = lighting.Ambient
+            local material = terrain.Material
+
+            assert(Schema.vector3():parse(vector).ok, "Vector3 must parse")
+            assert(Schema.cframe():parse(frame).ok, "CFrame must parse")
+            assert(Schema.color3():parse(color).ok, "Color3 must parse")
+            assert(Schema.enumItem(material.EnumType):parse(material).ok, "configured EnumItem must parse")
+            assert(not Schema.vector3():parse(true).ok, "wrong Vector3 type must fail")
+            assert(not Schema.cframe():parse(true).ok, "wrong CFrame type must fail")
+            assert(not Schema.color3():parse(true).ok, "wrong Color3 type must fail")
+            assert(not Schema.enumItem():parse(true).ok, "wrong EnumItem type must fail")
+            assert(not Schema.number():parse(math.huge).ok, "infinite numbers must fail")
+
+            local terrainPolicy = Schema.instance({
+                classNames = { "Terrain" },
+                ancestor = workspace,
+            })
+            local invalidPolicyAccepted = pcall(function()
+                Schema.instance({
+                    classNames = { "" },
+                    ancestor = workspace,
+                })
+            end)
+            assert(not invalidPolicyAccepted, "blank Instance class policy must fail")
+
+            assert(terrainPolicy:parse(terrain).ok, "allowed Instance within ancestry must parse")
+
+            local wrongClass = terrainPolicy:parse(workspace)
+            assert(not wrongClass.ok, "wrong Instance class must fail")
+            if not wrongClass.ok then
+                assert(wrongClass.error.code == "SCHEMA_INSTANCE_CLASS", "class error code must be stable")
+            end
+
+            local outsideAncestry = Schema.instance({
+                classNames = { "Lighting" },
+                ancestor = workspace,
+            }):parse(lighting)
+            assert(not outsideAncestry.ok, "Instance outside ancestry must fail")
+            if not outsideAncestry.ok then
+                assert(outsideAncestry.error.code == "SCHEMA_INSTANCE_ANCESTRY", "ancestry error code must be stable")
+            end
+        end)
     end)
 end

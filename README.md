@@ -52,6 +52,17 @@ local transport = RobloxRemote.new()
 transport:bindEvent(remoteEvent, purchase, services)
 ```
 
+## Roblox schema policy
+
+```lua
+local target = Schema.instance({
+    classNames = { "BasePart" },
+    ancestor = workspace:WaitForChild("BuildArea"),
+})
+```
+
+Roblox datatypes use explicit validators: `Schema.vector3()`, `Schema.cframe()`, `Schema.color3()`, and `Schema.enumItem(expectedEnum?)`. `Schema.instance` always requires both class allow-list and ancestry root. Passing schema validation does not prove a player owns, may modify, or may target that Instance.
+
 ## Guarantees and limits
 
 - Raw remote payload is schema-validated before execution.

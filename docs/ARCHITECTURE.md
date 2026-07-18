@@ -149,6 +149,10 @@ Schema responsibilities:
 - static exported types where Luau supports them;
 - explicit Roblox datatype policies.
 
+Current Roblox datatype validators cover `Vector3`, `CFrame`, `Color3`, and `EnumItem`. `Schema.instance` requires an explicit class allow-list and ancestry root; arbitrary Instances have no default schema.
+
+Datatype checks are constant work except `CFrame`, which checks its fixed twelve components, and `Schema.instance`, which is $O(c)$ for $c$ allowed classes plus one ancestry query. CFrame validation uses multiple returns rather than allocating a temporary component table.
+
 Schema does not infer security policy from a field name.
 
 ## 8. Action Contract
