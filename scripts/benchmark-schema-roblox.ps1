@@ -9,7 +9,7 @@ New-Item -ItemType Directory -Force -Path $build | Out-Null
 $rojo = Get-Command rojo -ErrorAction Stop
 $runner = Get-Command run-in-roblox -ErrorAction Stop
 
-& $rojo.Source build (Join-Path $root "default.project.json") --output $place
+& $rojo.Source build (Join-Path $root "test.project.json") --output $place
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }

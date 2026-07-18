@@ -1,0 +1,14 @@
+{
+  "name": "AnvilConsumerSmoke",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "Packages": {
+        "$path": "Packages"
+      },
+      "Smoke": {
+        "$path": "src"
+      }
+    }
+  }
+}

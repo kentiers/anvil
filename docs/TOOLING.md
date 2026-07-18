@@ -32,7 +32,7 @@ Run checks:
 ```bash
 stylua --check src/ test/ tools/ benchmarks/
 selene src/ test/ tools/ benchmarks/
-rojo sourcemap default.project.json --output sourcemap.json
+rojo sourcemap test.project.json --output sourcemap.json
 luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/ benchmarks/
 powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 ```
@@ -54,6 +54,12 @@ powershell -ExecutionPolicy Bypass -File scripts/benchmark-schema-roblox.ps1
 ```
 
 GitHub-hosted CI runs formatting, linting, and type analysis. It does not run Roblox Studio: Studio's GUI installer and plugin execution require an interactive desktop session. Run `scripts/test.ps1` locally before opening a pull request.
+
+Verify published-package installation and runtime behavior from isolated consumer fixture:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/test-consumer.ps1
+```
 
 Verify the failure exit contract without committing a failing spec:
 

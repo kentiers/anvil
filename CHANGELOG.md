@@ -8,6 +8,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 
 ### Added
 
+### Changed
+
+### Security
+
+## [0.1.0] - 2026-07-18
+
+### Added
+
 - Server-only `Action` pipeline with schema validation, deterministic cooldowns, token-bucket rate limits, authorization, output validation, and structured `Result` values.
 - Caller-owned `RemoteEvent` and `RemoteFunction` transport binding with safe client failure responses and per-request scope cleanup.
 - Deterministic Action, cooldown, rate-limit, authorization, output, and transport dispatch behavior tests.
@@ -16,7 +24,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 
 ### Changed
 
-- Wally package realm is `server`; Action and transport code is no longer mapped to `ReplicatedStorage` in test places.
+- Wally package realm is `server`; Action and transport code are no longer mapped to `ReplicatedStorage` in test places.
+- Wally package root now uses its standard `default.project.json` source mapping.
 
 ### Security
 
