@@ -3,8 +3,8 @@
   "tree": {
     "$className": "DataModel",
     "ServerScriptService": {
-      "Packages": {
-        "$path": "Packages"
+      "ServerPackages": {
+        "$path": "ServerPackages"
       },
       "Smoke": {
         "$path": "src"

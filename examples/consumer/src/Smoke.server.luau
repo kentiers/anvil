@@ -1,7 +1,7 @@
 --!strict
 
 local ServerScriptService = game:GetService("ServerScriptService")
-local Anvil = require(ServerScriptService.Packages.Anvil)
+local Anvil = require(ServerScriptService.ServerPackages.Anvil)
 
 local executed = false
 local action = Anvil.Action.new("ConsumerSmoke", {
