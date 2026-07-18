@@ -1,0 +1,9 @@
+# Anvil toolchain managed by Rokit.
+# Install with: rokit install
+
+[tools]
+rojo = "rojo-rbx/rojo@7.6.1"
+wally = "UpliftGames/wally@0.3.2"
+luau-lsp = "JohnnyMorganz/luau-lsp@1.68.1"
+stylua = "JohnnyMorganz/stylua@0.20.0"
+selene = "Kampfkarren/selene@0.31.0"
