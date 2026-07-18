@@ -10,7 +10,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 
 ### Changed
 
+### Fixed
+
 ### Security
+
+## [0.1.1] - 2026-07-18
+
+### Fixed
+
+- Correct Wally installation guidance and consumer fixture to use server dependencies for the server-realm package.
 
 ## [0.1.0] - 2026-07-18
 
