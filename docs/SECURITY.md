@@ -1,69 +1,100 @@
 # Anvil Security Model
 
-**Status:** Draft
-**Version:** 0.1
+**Applies to:** public `0.1.x` line
+**Status:** supported baseline
 
-## Threat Model
+Anvil provides server-side trust-boundary controls. It does not make game-domain rules correct by inference.
 
-Anvil assumes clients, client payloads, and client-visible Instances are untrusted. Server code, server-owned state, and server-side configuration are trusted only within the application's own security boundary.
+## Threat model
 
-## Required Guarantees
+Treat every client, client payload, and client-visible Instance as untrusted. Treat server configuration and server-owned state as trusted only inside game code's own security boundary.
 
-- raw network payload never reaches an action executor;
-- schema validation occurs on the server;
-- rate limit and cooldown occur on the server;
-- authorization occurs on the server;
-- client values do not define price, reward, ownership, or entitlement;
-- Instance payloads require explicit class and ancestry policy;
-- server-only modules are not required from client-visible locations;
-- action failures do not reveal server-only state;
-- diagnostics do not serialize secrets or full profiles by default.
+Anvil assumes Roblox delivers a network payload to a caller-owned `RemoteEvent` or `RemoteFunction`. The application decides which remote exists and which Action it binds. Anvil never discovers or creates remotes automatically.
 
-## Out of Scope
+## Enforced action boundary
 
-Anvil is not an anti-cheat system. It cannot detect every exploit, prevent client-side tampering, or make insecure domain logic safe automatically.
+For an `Action`, raw input follows one fixed order:
 
-Anvil cannot infer whether a domain mutation is economically correct. The application must implement server-side rules.
-
-## Payload Policy
-
-Default network schema behavior:
-
-- reject unknown object fields;
-- reject `NaN` and infinite numbers;
-- bound strings, arrays, and nested depth;
-- reject unsupported Roblox datatypes;
-- reject arbitrary Instances unless explicitly configured;
-- return stable, non-secret error codes.
-
-`Schema.instance` is opt-in and requires both non-empty `classNames` and an `ancestor` Instance. An accepted Instance must satisfy an allowed class through `IsA` and be that ancestor or its descendant. This validates reference shape only; domain code still validates ownership and game rules.
-
-## Error Policy
-
-Client-facing errors use stable codes and safe messages:
-
-```lua
-return Forge.err("INSUFFICIENT_FUNDS")
+```text
+receive
+  -> schema validation
+  -> rate limit
+  -> cooldown
+  -> authorization
+  -> domain execution
+  -> output validation
+  -> safe response
 ```
 
-Internal diagnostics may include a source path or rule details, but must not expose:
+Consequences:
 
-- DataStore keys;
-- server secrets;
-- full profile data;
-- private moderation notes;
-- internal stack traces in production.
+- invalid input does not reach `execute`;
+- unknown object fields are rejected by default;
+- rate limits and cooldowns run on server state;
+- an authorization hook runs before domain execution;
+- declared output is validated before transport serializes a success response;
+- expected failure returns a stable code, not an internal error object.
 
-## Transaction Policy
+## What schemas validate
 
-Transactions only cover mutations registered with Anvil. External effects require compensation and are never reported as automatically rolled back.
+Schemas validate shape, bounds, and selected Roblox datatypes. Default payload policy:
 
-## Review Checklist
+- reject unknown object fields;
+- reject `NaN`, positive infinity, and negative infinity;
+- bound strings and numbers when schema declares bounds;
+- recursively validate arrays and objects against their supplied schemas;
+- reject unsupported values;
+- reject arbitrary Instances unless an explicit policy allows them.
 
-- [ ] Every action has a runtime input schema.
-- [ ] Every action has server-side authorization where required.
-- [ ] Every action has cooldown/rate-limit policy where abuse is possible.
-- [ ] Domain handler does not trust client-owned values.
-- [ ] Instance schemas constrain class and ancestry.
-- [ ] Diagnostics are disabled or sanitized in production.
-- [ ] Tests include malformed, oversized, and unauthorized payloads.
+`Schema.instance` requires non-empty `classNames` and an `ancestor` Instance. Accepted values must satisfy an allowed `IsA` class and be the ancestor itself or a descendant.
+
+This is **reference validation**, not authorization. Domain code must still validate ownership, entitlement, placement rules, distance, currency, inventory, and moderation policy.
+
+## Client response policy
+
+Remote failures expose only a stable error code:
+
+```lua
+return Anvil.Result.err("PURCHASE_NOT_ALLOWED")
+```
+
+Do not return stack traces, DataStore keys, private profiles, moderation notes, secrets, or detailed server state to clients. Keep operational diagnostics server-only and bounded.
+
+## Resource lifecycle
+
+Use `Scope` for every resource an Action or service owns:
+
+- `RBXScriptConnection`;
+- cancellable scheduled thread;
+- Instance;
+- callback registration;
+- child Scope.
+
+Scope destruction is idempotent. Transport dispatch creates a request Scope and destroys it after dispatch completes. Long-lived resources still need an explicit application-owned Scope.
+
+## Limits
+
+Anvil does not:
+
+- detect all exploits or replace anti-cheat;
+- make client UI state authoritative;
+- validate economy, rewards, damage, or ownership automatically;
+- guarantee rollback of Roblox physics, DataStore writes, or other external effects;
+- secure other packages, remotes, or handlers not routed through an Anvil Action.
+
+## Production integration checklist
+
+- [ ] Place Anvil under `ServerScriptService.ServerPackages`; never expose Action or Transport under `ReplicatedStorage`.
+- [ ] Bind caller-owned remotes only on server.
+- [ ] Give every client-originated Action a runtime input schema.
+- [ ] Reject or normalize client fields before domain execution.
+- [ ] Read prices, balances, rewards, permissions, and ownership from server-owned state.
+- [ ] Add authorization, cooldown, and rate limit where abuse is plausible.
+- [ ] Constrain Instance references by class and ancestry; then apply game-specific authorization.
+- [ ] Return stable `Result.err` codes for expected failures.
+- [ ] Register owned resources with a Scope and destroy it at lifecycle end.
+- [ ] Test malformed, boundary, unauthorized, rate-limited, and cleanup paths.
+
+## Reporting vulnerabilities
+
+Do not publish exploit details in a public issue. Use [GitHub private security reporting](https://github.com/kentiers/anvil/security/advisories/new) with affected version, minimum reproduction, impact, and proposed mitigation. If private reporting is unavailable, contact repository maintainers before opening an issue.

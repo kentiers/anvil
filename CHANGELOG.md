@@ -14,6 +14,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 
 ### Security
 
+## [0.1.3] - 2026-07-18
+
+### Changed
+
+- Rewrite public README, security policy, repository metadata, and roadmap status for the released package.
+
+### Security
+
+- Add private vulnerability-reporting policy and production integration checklist.
+
 ## [0.1.2] - 2026-07-18
 
 ### Fixed
