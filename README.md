@@ -9,8 +9,8 @@ Pre-1.0 development. APIs may change in minor releases before `1.0.0`.
 ## Install
 
 ```toml
-[dependencies]
-Anvil = "kentiers/anvil@0.1.0"
+[server-dependencies]
+Anvil = "kentiers/anvil@0.1.1"
 ```
 
 Install with Wally, then place package in a server-only Rojo location such as `ServerScriptService`. Do not expose `Action` or `Transport` modules through `ReplicatedStorage`.
