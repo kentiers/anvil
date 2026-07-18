@@ -110,9 +110,9 @@ Methods must avoid Promise allocation.
 ```lua
 local scope = Scope.new("Player", player)
 
-scope:connect(connection)
-scope:own(thread)
-scope:own(instance)
+scope:connect(connection, disconnect)
+scope:own(thread, cancel)
+scope:own(instance, destroy)
 scope:defer(cleanup)
 local child = scope:child("Character", character)
 scope:destroy()
@@ -122,13 +122,13 @@ Invariants:
 
 - destruction is idempotent;
 - children are destroyed before parent completion;
-- owned connections are disconnected;
-- owned cancellable threads are cancelled;
+- resources are cleaned through explicit callbacks;
+- owned cancellable threads are cancelled through their registered callback;
 - owned Instances are destroyed only when explicitly registered;
 - new resources cannot be registered after destruction;
 - development mode may report use-after-destroy.
 
-`Scope` does not claim automatic ownership of arbitrary values.
+`Scope` does not infer ownership or cleanup behavior from arbitrary values. Resource cleanup callbacks must be supplied explicitly.
 
 ## 7. Schema Contract
 
