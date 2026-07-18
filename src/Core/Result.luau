@@ -14,10 +14,10 @@ function Result.ok<T>(value: T): Result<T>
     }
 end
 
-function Result.err<T>(error: Error): Result<T>
+function Result.err<T>(code: string, details: { [string]: unknown }?): Result<T>
     return {
         ok = false,
-        error = error,
+        error = ErrorModule.new(code, nil, nil, details),
     }
 end
 
@@ -43,6 +43,34 @@ function Result.unwrapOr<T>(result: Result<T>, fallback: T): T
     end
 
     return fallback
+end
+
+function Result.map<T, U>(result: Result<T>, transform: (T) -> U): Result<U>
+    if not result.ok then
+        return result
+    end
+
+    return Result.ok(transform(result.value))
+end
+
+function Result.mapErr<T>(result: Result<T>, transform: (Error) -> Error): Result<T>
+    if result.ok then
+        return result
+    end
+
+    local mappedError = transform(result.error)
+    return {
+        ok = false,
+        error = mappedError,
+    }
+end
+
+function Result.andThen<T, U>(result: Result<T>, transform: (T) -> Result<U>): Result<U>
+    if not result.ok then
+        return result
+    end
+
+    return transform(result.value)
 end
 
 return Result
