@@ -17,7 +17,7 @@ jobs:
         run: |
           Invoke-RestMethod https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.ps1 | Invoke-Expression
           $env:PATH = "$HOME\.rokit\bin;$env:PATH"
-          rokit trust rojo-rbx/rojo UpliftGames/wally JohnnyMorganz/luau-lsp JohnnyMorganz/stylua Kampfkarren/selene
+          rokit trust rojo-rbx/rojo UpliftGames/wally JohnnyMorganz/luau-lsp JohnnyMorganz/stylua Kampfkarren/selene rojo-rbx/run-in-roblox
           rokit install
 
 
