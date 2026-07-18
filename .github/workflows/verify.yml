@@ -28,14 +28,14 @@ jobs:
 
       - name: Check formatting
         shell: pwsh
-        run: stylua --check src/ test/ tools/
+        run: stylua --check src/ test/ tools/ benchmarks/
 
       - name: Lint
         shell: pwsh
-        run: selene src/ test/ tools/
+        run: selene src/ test/ tools/ benchmarks/
 
       - name: Type-check
         shell: pwsh
         run: |
           rojo sourcemap default.project.json --output sourcemap.json
-          luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/
+          luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/ benchmarks/

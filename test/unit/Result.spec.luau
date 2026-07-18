@@ -1,7 +1,7 @@
 --!strict
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Anvil = ReplicatedStorage.Anvil
+local ServerScriptService = game:GetService("ServerScriptService")
+local Anvil = ServerScriptService.Anvil
 local Error = require(Anvil.Core.Error)
 local Result = require(Anvil.Core.Result)
 

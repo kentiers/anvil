@@ -4,15 +4,18 @@
     "$className": "DataModel",
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
-      "Anvil": {
-        "$path": "src"
-      },
       "DevPackages": {
         "$path": "DevPackages"
       }
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",
+      "Anvil": {
+        "$path": "src"
+      },
+      "Benchmarks": {
+        "$path": "benchmarks"
+      },
       "Tests": {
         "$path": "test"
       }

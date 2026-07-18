@@ -156,15 +156,17 @@ Schema does not infer security policy from a field name.
 ```lua
 local action = Action.new("Example.Execute", {
     input = ActionInput,
-    cooldown = 0.25,
-    rateLimit = {
-        capacity = 10,
-        refillPerSecond = 1,
-    },
+    output = Schema.object({ Accepted = Schema.boolean() }),
+    cooldown = Cooldown.new(0.25, os.clock),
+    rateLimit = RateLimit.new(10, 1, os.clock),
     authorize = authorize,
-    execute = execute,
+    execute = function(context)
+        return Result.ok({ Accepted = true })
+    end,
 })
 ```
+
+`Action:run(context)` validates input, then applies rate limit, cooldown, authorization, execution, and declared output validation. Only validated input reaches `execute`. Expected failures return `Result`; programmer failures throw.
 
 `execute(context)` receives:
 
@@ -180,16 +182,14 @@ local action = Action.new("Example.Execute", {
 
 The action runner owns ordering. Domain handlers own domain decisions and mutations.
 
-## 9. Transport Interface
+## 9. Roblox Remote Transport
 
 ```lua
-export type Transport = {
-    bind: (self: Transport, name: string, handler: (...any) -> ()) -> Scope,
-    send: (self: Transport, player: Player, name: string, payload: unknown) -> (),
-}
+local transport = RobloxRemote.new()
+local binding = transport:bindEvent(remoteEvent, action, services)
 ```
 
-The core transport must use Roblox RemoteEvent/RemoteFunction primitives. ByteNet, Remo, and other transports are optional adapters.
+`RobloxRemote` accepts caller-owned `RemoteEvent` or `RemoteFunction` instances; it never creates remotes implicitly. Each request gets a destroyed request scope after execution. Client failures expose only stable error codes. Successful values are sent only when `Action` declares and validates an output schema. Transport and Action modules are server-only.
 
 ## 10. State and Transaction Boundary
 
@@ -230,6 +230,8 @@ Tests must not call live DataStoreService, MarketplaceService, or real client ne
 - bounded diagnostic buffers;
 - no automatic Workspace scan;
 - optional adapters lazy-loaded.
+
+Action request cost is schema parsing plus constant-time rate-limit and cooldown table lookups, one request `Scope`, and domain execution. No Action diagnostic path exists yet, so diagnostics-on and diagnostics-off cost are identical. `benchmarks/ActionBenchmark.luau` compares validated manual input handling with Action execution for a fixed small object payload; it is a local comparison, not a universal performance claim.
 
 ## 13. Compatibility
 
