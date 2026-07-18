@@ -12,18 +12,18 @@ return function()
     })
 
     local valid = buyInput:parse({
-        ItemId = "Potion",
+        ItemId = "item-001",
         Quantity = 2,
     })
     assert(valid.ok, "valid object must parse")
     if valid.ok then
         local parsed = valid.value :: { [string]: unknown }
-        assert(parsed["ItemId"] == "Potion", "object parser must preserve fields")
+        assert(parsed["ItemId"] == "item-001", "object parser must preserve fields")
         assert(parsed["Quantity"] == 2, "object parser must preserve numbers")
     end
 
     local invalidType = buyInput:parse({
-        ItemId = "Potion",
+        ItemId = "item-001",
         Quantity = "2",
     })
     assert(not invalidType.ok, "wrong field type must fail")
@@ -33,7 +33,7 @@ return function()
     end
 
     local unknownField = buyInput:parse({
-        ItemId = "Potion",
+        ItemId = "item-001",
         Quantity = 2,
         Price = 100,
     })

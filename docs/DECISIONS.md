@@ -61,3 +61,11 @@
 **Reason:** These tools solve distinct needs: project mapping, package installation, formatting, linting, and strict type analysis. Graphify builds a knowledge graph for exploration; it is not a correctness gate and must not replace type checks, tests, or security review.
 
 **Consequence:** Tool versions are pinned in `rokit.toml`. Generated `sourcemap.json` and `graphify-out/` stay ignored. Anvil runtime keeps zero mandatory third-party dependencies.
+
+## ADR-010 — Domain-Neutral Package
+
+**Decision:** Anvil remains a reusable Roblox foundation package. Domain names such as potion, shop, currency, inventory, or trap belong in consumer projects and adapters, not Anvil core.
+
+**Reason:** Anvil is distributed publicly through Wally for unrelated games. Core contracts must solve infrastructure problems without encoding Wild Trap gameplay assumptions.
+
+**Consequence:** Tests and documentation use neutral fixtures. Game-specific examples stay in separate consumer examples or integration projects.
