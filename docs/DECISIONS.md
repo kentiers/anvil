@@ -69,3 +69,11 @@
 **Reason:** Anvil is distributed publicly through Wally for unrelated Roblox games. Core contracts solve infrastructure problems without encoding consumer gameplay assumptions.
 
 **Consequence:** Tests and documentation use neutral fixtures. Game-specific examples stay in separate consumer examples or integration projects.
+
+## ADR-011 — TestEZ in Real Roblox Studio
+
+**Decision:** Run TestEZ tests through `run-in-roblox` against a Rojo-built place. TestEZ remains a Wally development dependency and never enters Anvil runtime dependencies.
+
+**Reason:** Core modules use Luau syntax and Roblox instance paths. Lemur-based execution does not faithfully execute that environment. Real Studio tests provide correct Luau behavior and actionable failure output.
+
+**Consequence:** Local and CI test commands require Roblox Studio. `scripts/test.ps1` translates TestEZ's `failureCount` into a nonzero process exit code.

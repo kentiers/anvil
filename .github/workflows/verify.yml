@@ -1,0 +1,49 @@
+name: Verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rokit
+        shell: pwsh
+        run: |
+          Invoke-RestMethod https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.ps1 | Invoke-Expression
+          rokit trust rojo-rbx/rojo UpliftGames/wally JohnnyMorganz/luau-lsp JohnnyMorganz/stylua Kampfkarren/selene rojo-rbx/run-in-roblox
+          rokit install
+
+      - name: Install Roblox Studio
+        shell: pwsh
+        run: |
+          $installer = Join-Path $env:TEMP "RobloxStudioLauncherBeta.exe"
+          Invoke-WebRequest https://setup.rbxcdn.com/RobloxStudioLauncherBeta.exe -OutFile $installer
+          Start-Process $installer -ArgumentList "-install" -Wait
+
+      - name: Install test dependency
+        shell: pwsh
+        run: wally install
+
+      - name: Check formatting
+        shell: pwsh
+        run: stylua --check src/ test/ tools/
+
+      - name: Lint
+        shell: pwsh
+        run: selene src/ test/ tools/
+
+      - name: Type-check
+        shell: pwsh
+        run: |
+          rojo sourcemap default.project.json --output sourcemap.json
+          luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/
+
+      - name: Run TestEZ
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File scripts/test.ps1
