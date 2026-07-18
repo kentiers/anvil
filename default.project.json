@@ -1,0 +1,21 @@
+{
+  "name": "Anvil",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Anvil": {
+        "$path": "src"
+      },
+      "DevPackages": {
+        "$path": "DevPackages"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Tests": {
+        "$path": "test"
+      }
+    }
+  }
+}

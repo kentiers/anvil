@@ -110,9 +110,9 @@ Methods must avoid Promise allocation.
 ```lua
 local scope = Scope.new("Player", player)
 
-scope:connect(connection)
-scope:own(thread)
-scope:own(instance)
+scope:connect(connection, disconnect)
+scope:own(thread, cancel)
+scope:own(instance, destroy)
 scope:defer(cleanup)
 local child = scope:child("Character", character)
 scope:destroy()
@@ -122,23 +122,23 @@ Invariants:
 
 - destruction is idempotent;
 - children are destroyed before parent completion;
-- owned connections are disconnected;
-- owned cancellable threads are cancelled;
+- resources are cleaned through explicit callbacks;
+- owned cancellable threads are cancelled through their registered callback;
 - owned Instances are destroyed only when explicitly registered;
 - new resources cannot be registered after destruction;
 - development mode may report use-after-destroy.
 
-`Scope` does not claim automatic ownership of arbitrary values.
+`Scope` does not infer ownership or cleanup behavior from arbitrary values. Resource cleanup callbacks must be supplied explicitly.
 
 ## 7. Schema Contract
 
 ```lua
-local BuyInput = Schema.object({
-    ItemId = Schema.string():minLength(1):maxLength(64),
-    Quantity = Schema.integer():between(1, 99),
+local ActionInput = Schema.object({
+    Name = Schema.string():minLength(1):maxLength(64),
+    Count = Schema.integer():between(1, 99),
 })
 
-local value, err = BuyInput:parse(raw)
+local result = ActionInput:parse(raw)
 ```
 
 Schema responsibilities:
@@ -154,8 +154,8 @@ Schema does not infer security policy from a field name.
 ## 8. Action Contract
 
 ```lua
-local action = Action.new("Shop.Buy", {
-    input = BuyInput,
+local action = Action.new("Example.Execute", {
+    input = ActionInput,
     cooldown = 0.25,
     rateLimit = {
         capacity = 10,
@@ -200,7 +200,7 @@ Later state contract:
 ```lua
 local state = State.new(defaultValue, scope)
 local tx = state:transaction()
-tx:set({"Coins"}, 100)
+tx:set({"Value"}, 100)
 tx:commit()
 ```
 

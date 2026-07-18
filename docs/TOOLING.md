@@ -11,32 +11,43 @@ rokit install
 Required development tools:
 
 - `rojo` — project tree and sourcemap generation;
-- `wally` — package installation;
+- `wally` — package installation and test-only packages;
 - `stylua` — deterministic Luau formatting;
 - `selene` — Roblox-aware linting;
-- `luau-lsp` — strict type analysis and editor intelligence.
+- `luau-lsp` — strict type analysis and editor intelligence;
+- `run-in-roblox` — executes TestEZ inside local Roblox Studio.
 
-Runtime Anvil remains native Luau with zero mandatory third-party dependencies. These are development tools, not runtime package dependencies.
+Runtime Anvil remains native Luau with zero mandatory third-party dependencies. TestEZ is a Wally development dependency only.
 
 ## Local checks
 
-```bash
-stylua src/ test/ examples/
-selene src/ test/ examples/
-rojo sourcemap default.project.json --output sourcemap.json
-luau-lsp analyze
-```
-
-Use `stylua --check` instead of formatting in CI:
+Install development packages once after checkout or dependency changes:
 
 ```bash
-stylua --check src/ test/ examples/
-selene src/ test/ examples/
-rojo sourcemap default.project.json --output sourcemap.json
-luau-lsp analyze
+wally install
 ```
 
-`sourcemap.json` is generated and ignored. Do not commit it.
+Run checks:
+
+```bash
+stylua --check src/ test/ tools/
+selene src/ test/ tools/
+rojo sourcemap default.project.json --output sourcemap.json
+luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/
+powershell -ExecutionPolicy Bypass -File scripts/test.ps1
+```
+
+`scripts/test.ps1` builds a temporary Rojo place, runs TestEZ through local Roblox Studio, and returns zero only when TestEZ reports zero failures.
+
+GitHub-hosted CI runs formatting, linting, and type analysis. It does not run Roblox Studio: Studio's GUI installer and plugin execution require an interactive desktop session. Run `scripts/test.ps1` locally before opening a pull request.
+
+Verify the failure exit contract without committing a failing spec:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/verify-test-harness.ps1
+```
+
+`sourcemap.json`, `build/`, and `DevPackages/` are generated and ignored. Do not commit them.
 
 ## Graphify
 

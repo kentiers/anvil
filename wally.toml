@@ -1,0 +1,10 @@
+[package]
+name = "kentiers/anvil"
+version = "0.0.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+license = "MIT"
+authors = ["kentiers"]
+
+[dev-dependencies]
+TestEZ = "roblox/testez@0.4.1"
