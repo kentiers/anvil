@@ -1,0 +1,19 @@
+--!strict
+
+local ServerScriptService = game:GetService("ServerScriptService")
+local Anvil = require(ServerScriptService.Anvil)
+
+return function()
+    local testEnvironment = getfenv()
+    local describe: (name: string, callback: () -> ()) -> () = testEnvironment.describe
+    local it: (name: string, callback: () -> ()) -> () = testEnvironment.it
+    describe("Anvil", function()
+        it("exports public modules from package root", function()
+            assert(type(Anvil.Action.new) == "function", "package root must export Action")
+            assert(type(Anvil.Schema.object) == "function", "package root must export Schema")
+            assert(type(Anvil.Scope.new) == "function", "package root must export Scope")
+            assert(type(Anvil.Result.ok) == "function", "package root must export Result")
+            assert(type(Anvil.Error.new) == "function", "package root must export Error")
+        end)
+    end)
+end

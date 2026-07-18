@@ -37,5 +37,5 @@ jobs:
       - name: Type-check
         shell: pwsh
         run: |
-          rojo sourcemap default.project.json --output sourcemap.json
+          rojo sourcemap test.project.json --output sourcemap.json
           luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/ benchmarks/

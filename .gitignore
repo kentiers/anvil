@@ -4,6 +4,7 @@ DevPackages/
 sourcemap.json
 build/
 graphify-out/
+examples/consumer/Packages/
 
 .env
 .env.*

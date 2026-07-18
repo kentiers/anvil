@@ -10,10 +10,14 @@ Pre-1.0 development. APIs may change in minor releases before `1.0.0`.
 
 ```toml
 [dependencies]
-Anvil = "kentiers/anvil@0.0.0"
+Anvil = "kentiers/anvil@0.1.0"
 ```
 
 Install with Wally, then place package in a server-only Rojo location such as `ServerScriptService`. Do not expose `Action` or `Transport` modules through `ReplicatedStorage`.
+
+### Migration
+
+Initial public release. No prior public API exists to migrate.
 
 ## Quick start
 
@@ -78,5 +82,15 @@ Roblox datatypes use explicit validators: `Schema.vector3()`, `Schema.cframe()`,
 wally install
 powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 ```
+
+## Consumer smoke test
+
+After `kentiers/anvil@0.1.0` is available in Wally, verify a clean consumer project with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/test-consumer.ps1
+```
+
+`examples/consumer` installs the exact public package, maps it server-only through Rojo, then verifies valid and invalid `Action` requests with an Instance policy.
 
 TestEZ runs through local Roblox Studio. GitHub-hosted CI runs formatting, lint, and strict analysis only.
