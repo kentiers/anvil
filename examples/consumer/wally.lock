@@ -5,9 +5,9 @@ registry = "test"
 [[package]]
 name = "kentiers/anvil"
 version = "0.1.2"
-dependencies = [["TestEZ", "roblox/testez@0.4.1"]]
+dependencies = []
 
 [[package]]
-name = "roblox/testez"
-version = "0.4.1"
-dependencies = []
+name = "kentiers/anvil-consumer-smoke"
+version = "0.1.2"
+dependencies = [["Anvil", "kentiers/anvil@0.1.2"]]
