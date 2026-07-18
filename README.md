@@ -10,7 +10,7 @@ Pre-1.0 development. APIs may change in minor releases before `1.0.0`.
 
 ```toml
 [server-dependencies]
-Anvil = "kentiers/anvil@0.1.1"
+Anvil = "kentiers/anvil@0.1.2"
 ```
 
 Install with Wally, then place package in a server-only Rojo location such as `ServerScriptService`. Do not expose `Action` or `Transport` modules through `ReplicatedStorage`.
@@ -24,7 +24,7 @@ Initial public release. No prior public API exists to migrate.
 ```lua
 --!strict
 
-local Anvil = ServerScriptService.Packages.Anvil
+local Anvil = ServerScriptService.ServerPackages.Anvil
 local Action = require(Anvil.Action.Action)
 local Cooldown = require(Anvil.Action.Cooldown)
 local RateLimit = require(Anvil.Action.RateLimit)

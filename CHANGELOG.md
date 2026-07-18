@@ -14,6 +14,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 
 ### Security
 
+## [0.1.2] - 2026-07-18
+
+### Fixed
+
+- Correct server-realm Wally package path in the consumer fixture and installation quick start.
+
 ## [0.1.1] - 2026-07-18
 
 ### Fixed
