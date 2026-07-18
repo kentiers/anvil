@@ -30,14 +30,22 @@ wally install
 Run checks:
 
 ```bash
-stylua --check src/ test/ tools/
-selene src/ test/ tools/
+stylua --check src/ test/ tools/ benchmarks/
+selene src/ test/ tools/ benchmarks/
 rojo sourcemap default.project.json --output sourcemap.json
-luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/
+luau-lsp analyze --sourcemap sourcemap.json src/ test/ tools/ benchmarks/
 powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 ```
 
 `scripts/test.ps1` builds a temporary Rojo place, runs TestEZ through local Roblox Studio, and returns zero only when TestEZ reports zero failures.
+
+Measure Action overhead against manual schema validation on local Roblox Studio:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/benchmark-action.ps1
+```
+
+This benchmark reports one local measurement only. Record manual comparison, payload size, and diagnostics state before making a performance claim.
 
 GitHub-hosted CI runs formatting, linting, and type analysis. It does not run Roblox Studio: Studio's GUI installer and plugin execution require an interactive desktop session. Run `scripts/test.ps1` locally before opening a pull request.
 
