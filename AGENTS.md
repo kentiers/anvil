@@ -476,6 +476,24 @@ Never delete or overwrite unexpected user changes.
 
 One commit represents one logical change.
 
+An atomic change is smallest change that can be reviewed, verified, reverted, and described independently. It has one user-visible contract, one bug root cause, or one maintenance concern.
+
+Commit boundary rules:
+
+- include production code with direct tests, required docs, and generated metadata for that same change;
+- split changes only when each part can be reviewed, reverted, or released without the other;
+- do not split implementation from its required behavior test merely to make a smaller diff;
+- separate independent features, unrelated cleanup, and unrelated CI/tooling changes;
+- do not mix a prerequisite foundation with a feature that consumes it unless neither can work independently.
+
+Before opening a PR, run:
+
+```text
+git log --oneline main..HEAD
+```
+
+Every commit in that range must serve the PR's one declared goal. If multiple independent scopes appear, split the work into separate branches and PRs before merge.
+
 Good:
 
 ```text
@@ -625,6 +643,14 @@ PRs must be focused, reviewable, linked to a task, and backed by evidence.
 Default merge method: **squash merge**.
 
 Use squash when a PR contains fixups or represents one logical change. Use a merge commit only when preserving meaningful multi-commit history is important or repository policy requires it.
+
+Before selecting squash, inspect:
+
+```text
+git log --oneline main..HEAD
+```
+
+Squash only when every commit serves one PR goal. Never use squash to compress independent features into one synthetic commit. Split the PR first; use a merge commit only when intentionally preserving a coherent, reviewed sequence of atomic commits.
 
 Before merge:
 
