@@ -76,4 +76,4 @@
 
 **Reason:** Core modules use Luau syntax and Roblox instance paths. Lemur-based execution does not faithfully execute that environment. Real Studio tests provide correct Luau behavior and actionable failure output.
 
-**Consequence:** Local and CI test commands require Roblox Studio. `scripts/test.ps1` translates TestEZ's `failureCount` into a nonzero process exit code.
+**Consequence:** Local test commands require Roblox Studio. GitHub-hosted CI runs static checks only because Studio installation and plugin execution require an interactive desktop session. `scripts/test.ps1` translates TestEZ's `failureCount` into a nonzero process exit code.

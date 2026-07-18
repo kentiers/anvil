@@ -39,6 +39,8 @@ powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 
 `scripts/test.ps1` builds a temporary Rojo place, runs TestEZ through local Roblox Studio, and returns zero only when TestEZ reports zero failures.
 
+GitHub-hosted CI runs formatting, linting, and type analysis. It does not run Roblox Studio: Studio's GUI installer and plugin execution require an interactive desktop session. Run `scripts/test.ps1` locally before opening a pull request.
+
 Verify the failure exit contract without committing a failing spec:
 
 ```bash
