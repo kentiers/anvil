@@ -1,96 +1,165 @@
 # Anvil
 
-Anvil is server-side Luau foundation for Roblox actions with explicit `Result`, `Schema`, `Scope`, rate-limit, cooldown, authorization, and RemoteEvent/RemoteFunction boundaries.
+[![Verify](https://github.com/kentiers/anvil/actions/workflows/verify.yml/badge.svg)](https://github.com/kentiers/anvil/actions/workflows/verify.yml)
+[![Release](https://img.shields.io/github/v/release/kentiers/anvil?display_name=tag&label=release)](https://github.com/kentiers/anvil/releases)
+[![License](https://img.shields.io/github/license/kentiers/anvil)](LICENSE)
+[![Wally](https://img.shields.io/badge/Wally-kentiers%2Fanvil-ff6a8b)](https://wally.run/package/kentiers/anvil)
 
-## Status
+Server-authoritative Luau foundation for Roblox actions, runtime schemas, resource scopes, and safe remote boundaries.
 
-Pre-1.0 development. APIs may change in minor releases before `1.0.0`.
+Anvil gives server code one explicit path for untrusted input:
+
+```text
+remote payload
+  -> schema validation
+  -> rate limit
+  -> cooldown
+  -> authorization
+  -> domain execution
+  -> output validation
+  -> safe client response
+```
+
+## Why Anvil
+
+- **Trust boundaries are explicit.** Raw client values do not reach an action executor before its input schema passes.
+- **Failure is typed.** `Result` and stable error codes model expected gameplay failures without Promise allocation.
+- **Resource ownership is visible.** `Scope` owns connections, Instances, callbacks, and cancellable work; destruction is idempotent.
+- **Runtime cost is predictable.** Core has no required third-party runtime dependency, polling loop, or hidden remote creation.
+
+## Non-goals
+
+Anvil is not an anti-cheat system, DataStore wrapper, UI framework, networking replacement, or game-rule engine. Game code still owns prices, inventory, ownership, damage, permissions, and external-effect compensation.
 
 ## Install
 
+Anvil is a server-realm Wally package. Pin an exact version:
+
 ```toml
 [server-dependencies]
-Anvil = "kentiers/anvil@0.1.2"
+Anvil = "kentiers/anvil@0.1.3"
+```
+```bash
+wally install
 ```
 
-Install with Wally, then place package in a server-only Rojo location such as `ServerScriptService`. Do not expose `Action` or `Transport` modules through `ReplicatedStorage`.
+Map Wally's server dependencies into `ServerScriptService` with Rojo:
 
-### Migration
+```json
+{
+  "name": "MyGame",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "ServerPackages": { "$path": "ServerPackages" }
+    }
+  }
+}
+```
 
-Initial public release. No prior public API exists to migrate.
+Never map Anvil's `Action` or `Transport` modules into `ReplicatedStorage`.
 
-## Quick start
+## Use case: server-authoritative purchase request
+
+This example accepts only a bounded item identifier. Price, ownership, inventory mutation, and reward remain server decisions inside `execute`.
 
 ```lua
 --!strict
 
-local Anvil = ServerScriptService.ServerPackages.Anvil
-local Action = require(Anvil.Action.Action)
-local Cooldown = require(Anvil.Action.Cooldown)
-local RateLimit = require(Anvil.Action.RateLimit)
-local Result = require(Anvil.Core.Result)
-local Schema = require(Anvil.Schema.Schema)
+local ServerScriptService = game:GetService("ServerScriptService")
+local AnvilModule = ServerScriptService.ServerPackages.Anvil
+local Anvil = require(AnvilModule)
+local RobloxRemote = require(AnvilModule.Transport.RobloxRemote)
 
-local purchase = Action.new("Purchase", {
-    input = Schema.object({
-        ItemId = Schema.string():minLength(1):maxLength(64),
+local purchase = Anvil.Action.new("Purchase", {
+    input = Anvil.Schema.object({
+        ItemId = Anvil.Schema.string():minLength(1):maxLength(64),
     }),
-    output = Schema.object({ Accepted = Schema.boolean() }),
-    cooldown = Cooldown.new(0.25, os.clock),
-    rateLimit = RateLimit.new(10, 1, os.clock),
+    output = Anvil.Schema.object({ Accepted = Anvil.Schema.boolean() }),
+    cooldown = require(AnvilModule.Action.Cooldown).new(0.25, os.clock),
+    rateLimit = require(AnvilModule.Action.RateLimit).new(10, 1, os.clock),
     authorize = function()
-        return Result.ok(nil)
+        return Anvil.Result.ok(nil)
     end,
     execute = function(context)
-        -- Server validates ownership, price, and mutation here.
-        return Result.ok({ Accepted = true })
+        local input = context.input :: { ItemId: string }
+
+        -- Read catalog, price, balance, and ownership from server-owned state.
+        if input.ItemId == "" then
+            return Anvil.Result.err("PURCHASE_NOT_ALLOWED")
+        end
+        return Anvil.Result.ok({ Accepted = true })
     end,
 })
+
+local remotes = ServerScriptService:WaitForChild("Remotes")
+local purchaseRemote = remotes:WaitForChild("Purchase") :: RemoteEvent
+RobloxRemote.new():bindEvent(purchaseRemote, purchase, {})
 ```
 
-Bind a caller-owned remote on server:
+The caller creates and owns `purchaseRemote`; Anvil does not create remotes implicitly.
+
+## Runtime schemas
+
+Use schemas at every untrusted boundary. Roblox datatypes are explicit, and Instance references require both class and ancestry constraints:
 
 ```lua
-local RobloxRemote = require(Anvil.Transport.RobloxRemote)
-local transport = RobloxRemote.new()
-transport:bindEvent(remoteEvent, purchase, services)
-```
-
-## Roblox schema policy
-
-```lua
-local target = Schema.instance({
+local target = Anvil.Schema.instance({
     classNames = { "BasePart" },
     ancestor = workspace:WaitForChild("BuildArea"),
 })
 ```
 
-Roblox datatypes use explicit validators: `Schema.vector3()`, `Schema.cframe()`, `Schema.color3()`, and `Schema.enumItem(expectedEnum?)`. `Schema.instance` always requires both class allow-list and ancestry root. Passing schema validation does not prove a player owns, may modify, or may target that Instance.
+Available Roblox validators: `Schema.vector3()`, `Schema.cframe()`, `Schema.color3()`, and `Schema.enumItem(expectedEnum?)`.
 
-## Guarantees and limits
+Passing `Schema.instance` only proves reference shape and location. It does **not** prove player ownership, entitlement, placement validity, or permission.
 
-- Raw remote payload is schema-validated before execution.
-- Order: validation, rate limit, cooldown, authorization, execution, output validation.
-- Request scopes are destroyed after transport dispatch.
-- Client failures expose stable error codes only.
-- Anvil does not validate game economy, ownership, damage, or rewards automatically.
-- Core creates no polling loop and has no mandatory third-party runtime dependency.
+## Security and lifecycle
+
+- Input order is validation, rate limit, cooldown, authorization, execution, then output validation.
+- Unknown object fields, non-finite numbers, unsupported datatypes, and unconfigured Instances are rejected.
+- Client failures expose stable codes, not stack traces or server state.
+- Each request transport dispatch owns a `Scope` and destroys it after completion.
+
+Read [Security model](docs/SECURITY.md) before binding production remotes. Read [Architecture](docs/ARCHITECTURE.md) for contracts, constraints, and cost model.
+
+## Roadmap
+
+| Phase | Focus | Status |
+| --- | --- | --- |
+| 0.1 | Core: Result, Schema, Scope, Action, transport | Released |
+| 0.2 | Reliability: lifecycle helpers, fakes, diagnostics | Next |
+| 0.3 | Optional integration adapters | Planned |
+| 0.4+ | Transactions, generated contracts, CLI, Studio tooling | Planned |
+
+Full scope and exit gates: [ROADMAP.md](docs/ROADMAP.md).
 
 ## Verification
 
 ```powershell
 wally install
 powershell -ExecutionPolicy Bypass -File scripts/test.ps1
-```
-
-## Consumer smoke test
-
-After `kentiers/anvil@0.1.0` is available in Wally, verify a clean consumer project with:
-
-```powershell
 powershell -ExecutionPolicy Bypass -File scripts/test-consumer.ps1
 ```
 
-`examples/consumer` installs the exact public package, maps it server-only through Rojo, then verifies valid and invalid `Action` requests with an Instance policy.
+The consumer smoke test downloads exact public Wally package version, maps it server-only through Rojo, and exercises valid and invalid Action requests. TestEZ runs through local Roblox Studio; GitHub CI runs format, lint, and strict analysis.
 
-TestEZ runs through local Roblox Studio. GitHub-hosted CI runs formatting, lint, and strict analysis only.
+## Documentation
+
+- [Security model](docs/SECURITY.md)
+- [Architecture and API contracts](docs/ARCHITECTURE.md)
+- [Tooling and verification](docs/TOOLING.md)
+- [Changelog](CHANGELOG.md)
+- [Release notes](https://github.com/kentiers/anvil/releases)
+
+## Contributing and support
+
+Open a focused [issue](https://github.com/kentiers/anvil/issues) for bugs, design proposals, or documentation gaps. Report vulnerabilities privately; see [SECURITY.md](SECURITY.md).
+
+## Credits
+
+Built for Roblox with [Luau](https://luau.org/), [Wally](https://github.com/UpliftGames/wally), [Rojo](https://rojo.space/), and [TestEZ](https://github.com/Roblox/testez). Anvil is independent software; these projects are not bundled runtime dependencies.
+
+## License
+
+[MIT](LICENSE) © 2026 kentiers.

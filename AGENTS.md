@@ -297,6 +297,10 @@ Public features need:
 - changelog entry;
 - `--!strict` examples.
 
+Public package README MUST include current release and verification badges, concise purpose and non-goals, exact Wally installation and Rojo placement, one runnable `--!strict` use case, security and architecture links, roadmap status, verification commands, contribution or support route, credits, and license link.
+
+Security documentation MUST state trust boundary, enforced request order, safe client-response policy, lifecycle ownership, explicit limitations, production checklist, and private vulnerability reporting route. Every claim must trace to code or tests; do not advertise guarantees Anvil does not enforce.
+
 Never document unsupported guarantees.
 
 ## Versioning Policy

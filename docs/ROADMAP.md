@@ -34,6 +34,8 @@
 
 ## Phase 1 — Core 0.1.0
 
+**Status:** Released in `v0.1.2`.
+
 ### Deliverables
 
 - `Result` and structured `Error`;
@@ -64,6 +66,8 @@
 - clean install in a fresh Rojo/Wally sample project.
 
 ## Phase 2 — Reliability 0.2.0
+
+**Status:** Next.
 
 ### Deliverables
 
