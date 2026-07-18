@@ -64,8 +64,8 @@
 
 ## ADR-010 — Domain-Neutral Package
 
-**Decision:** Anvil remains a reusable Roblox foundation package. Domain names such as potion, shop, currency, inventory, or trap belong in consumer projects and adapters, not Anvil core.
+**Decision:** Anvil remains a reusable Roblox foundation package. Game-specific domain names and rules belong in consumer projects and adapters, not Anvil core.
 
-**Reason:** Anvil is distributed publicly through Wally for unrelated games. Core contracts must solve infrastructure problems without encoding Wild Trap gameplay assumptions.
+**Reason:** Anvil is distributed publicly through Wally for unrelated Roblox games. Core contracts solve infrastructure problems without encoding consumer gameplay assumptions.
 
 **Consequence:** Tests and documentation use neutral fixtures. Game-specific examples stay in separate consumer examples or integration projects.

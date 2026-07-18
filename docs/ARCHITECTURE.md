@@ -133,12 +133,12 @@ Invariants:
 ## 7. Schema Contract
 
 ```lua
-local BuyInput = Schema.object({
-    ItemId = Schema.string():minLength(1):maxLength(64),
-    Quantity = Schema.integer():between(1, 99),
+local ActionInput = Schema.object({
+    Name = Schema.string():minLength(1):maxLength(64),
+    Count = Schema.integer():between(1, 99),
 })
 
-local value, err = BuyInput:parse(raw)
+local result = ActionInput:parse(raw)
 ```
 
 Schema responsibilities:
@@ -154,8 +154,8 @@ Schema does not infer security policy from a field name.
 ## 8. Action Contract
 
 ```lua
-local action = Action.new("Shop.Buy", {
-    input = BuyInput,
+local action = Action.new("Example.Execute", {
+    input = ActionInput,
     cooldown = 0.25,
     rateLimit = {
         capacity = 10,
@@ -200,7 +200,7 @@ Later state contract:
 ```lua
 local state = State.new(defaultValue, scope)
 local tx = state:transaction()
-tx:set({"Coins"}, 100)
+tx:set({"Value"}, 100)
 tx:commit()
 ```
 

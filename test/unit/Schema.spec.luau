@@ -5,37 +5,37 @@ local Anvil = ReplicatedStorage.Anvil
 local Schema = require(Anvil.Schema.Schema)
 
 return function()
-    local buyInput = Schema.object({
-        ItemId = Schema.string():minLength(1):maxLength(64),
-        Quantity = Schema.integer():between(1, 99),
+    local actionInput = Schema.object({
+        Name = Schema.string():minLength(1):maxLength(64),
+        Count = Schema.integer():between(1, 99),
         Note = Schema.optional(Schema.string()),
     })
 
-    local valid = buyInput:parse({
-        ItemId = "item-001",
-        Quantity = 2,
+    local valid = actionInput:parse({
+        Name = "item-001",
+        Count = 2,
     })
     assert(valid.ok, "valid object must parse")
     if valid.ok then
         local parsed = valid.value :: { [string]: unknown }
-        assert(parsed["ItemId"] == "item-001", "object parser must preserve fields")
-        assert(parsed["Quantity"] == 2, "object parser must preserve numbers")
+        assert(parsed["Name"] == "item-001", "object parser must preserve fields")
+        assert(parsed["Count"] == 2, "object parser must preserve numbers")
     end
 
-    local invalidType = buyInput:parse({
-        ItemId = "item-001",
-        Quantity = "2",
+    local invalidType = actionInput:parse({
+        Name = "item-001",
+        Count = "2",
     })
     assert(not invalidType.ok, "wrong field type must fail")
     if not invalidType.ok then
         assert(invalidType.error.code == "SCHEMA_INTEGER_REQUIRED", "type error code must be stable")
-        assert(invalidType.error.path == "$.Quantity", "type error must include field path")
+        assert(invalidType.error.path == "$.Count", "type error must include field path")
     end
 
-    local unknownField = buyInput:parse({
-        ItemId = "item-001",
-        Quantity = 2,
-        Price = 100,
+    local unknownField = actionInput:parse({
+        Name = "item-001",
+        Count = 2,
+        Extra = true,
     })
     assert(not unknownField.ok, "unknown fields must fail closed")
     if not unknownField.ok then

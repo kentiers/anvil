@@ -12,7 +12,7 @@ return function()
     assert(Result.unwrap(value) == 42, "unwrap must return Ok value")
     assert(Result.unwrapOr(value, 0) == 42, "unwrapOr must prefer Ok value")
 
-    local details: { [string]: unknown } = { path = "quantity" }
+    local details: { [string]: unknown } = { path = "field" }
     local failure: Result.Result<number> = Result.err("INVALID_INPUT", details)
     assert(Result.isErr(failure), "Err result must report isErr")
     assert(not Result.isOk(failure), "Err result must not report isOk")
@@ -21,7 +21,7 @@ return function()
         error("expected Err result")
     end
     assert(failure.error.code == "INVALID_INPUT", "Err must preserve error code")
-    assert(failure.error.details ~= nil and failure.error.details.path == "quantity", "Err must preserve error details")
+    assert(failure.error.details ~= nil and failure.error.details.path == "field", "Err must preserve error details")
 
     local mapped = Result.map(value, function(number: number)
         return number * 2
