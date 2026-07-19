@@ -7,16 +7,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 ## [Unreleased]
 
 ### Added
-- Unreleased `Anvil.Test.FakeClock` for deterministic, monotonic time in test code.
-- Unreleased `Anvil.Lifecycle.PlayerScope` and `Anvil.Test.FakePlayer`/`FakeSignal` for deterministic native lifecycle tests.
-- Unreleased `Anvil.ErrorCode`, frozen constants for every stable Anvil-emitted Action and Schema error code.
-- Unreleased `Anvil.Test.FakeTransport` plus opt-in Scope lifecycle audit events for deterministic remote binding and development diagnostics.
 
 ### Changed
 
 ### Fixed
 
 ### Security
+
+## [0.2.0] - 2026-07-18
+
+### Added
+
+- `Anvil.Test.FakeClock` for deterministic, monotonic time in test code.
+- `Anvil.Lifecycle.PlayerScope` and `Anvil.Test.FakePlayer`/`FakeSignal` for deterministic native lifecycle tests.
+- `Anvil.ErrorCode`, frozen constants for every stable Anvil-emitted Action and Schema error code.
+- `Anvil.Test.FakeTransport` plus opt-in Scope lifecycle audit events for deterministic remote binding and development diagnostics.
 
 ## [0.1.3] - 2026-07-18
 

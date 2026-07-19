@@ -129,7 +129,7 @@ Read [Security model](docs/SECURITY.md) before binding production remotes. Read 
 | Phase | Focus | Status |
 | --- | --- | --- |
 | 0.1 | Core: Result, Schema, Scope, Action, transport | Released |
-| 0.2 | Reliability: lifecycle helpers, fakes, diagnostics | Complete (Unreleased) |
+| 0.2 | Reliability: lifecycle helpers, fakes, diagnostics | Released (`0.2.0`) |
 | 0.3 | Optional integration adapters | Planned |
 | 0.4+ | Transactions, generated contracts, CLI, Studio tooling | Planned |
 
@@ -151,6 +151,7 @@ The consumer smoke test downloads exact public Wally package version, maps it se
 - [Architecture and API contracts](docs/ARCHITECTURE.md)
 - [Tooling and verification](docs/TOOLING.md)
 - [Changelog](CHANGELOG.md)
+- [0.2.0 migration notes](docs/MIGRATION-0.2.0.md)
 - [Release notes](https://github.com/kentiers/anvil/releases)
 
 ## Contributing and support
