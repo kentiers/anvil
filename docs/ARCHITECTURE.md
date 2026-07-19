@@ -157,6 +157,18 @@ Invariants:
 
 `Scope` does not infer ownership or cleanup behavior from arbitrary values. Resource cleanup callbacks must be supplied explicitly.
 
+Development callers may opt into bounded-by-caller lifecycle audit events:
+
+```lua
+local scope = Scope.new("Player", player, {
+    audit = function(event)
+        -- `scope_destroyed` or `scope_use_after_destroy`
+    end,
+})
+```
+
+Each enabled event contains only `kind`, `scopeName`, and attempted `operation` when relevant. Child scopes inherit the hook. No hook, telemetry, event table, background loop, or polling exists by default. Callers enable this only in development; audit callbacks remain server-side and must not receive client payloads or secrets.
+
 `Lifecycle.PlayerScope.new(player, Players.PlayerRemoving)` binds an explicit player root Scope. It creates one current Character Scope, destroys the prior Character Scope on `CharacterAdded`, and destroys both scopes when that player is removed. It carries no team, inventory, avatar, or game-mode policy.
 
 ## 7. Schema Contract
@@ -253,6 +265,8 @@ FakeScope
 
 `Anvil.Test.FakeClock` starts at a finite supplied time or zero, advances only by finite non-negative intervals, and can supply injected clock callbacks to deterministic tests. Tests must not call live DataStoreService, MarketplaceService, or real client networking.
 
+`Anvil.Test.FakeTransport` creates deterministic event and function remotes for `RobloxRemote:bindEvent` and `:bindFunction` tests. It records event client responses, can trigger server events, and clears bindings through returned Scope destruction.
+
 ## 12. Performance Rules
 
 - no mandatory global Heartbeat connection;
@@ -264,7 +278,7 @@ FakeScope
 - no automatic Workspace scan;
 - optional adapters lazy-loaded.
 
-Action request cost is schema parsing plus constant-time rate-limit and cooldown table lookups, one request `Scope`, and domain execution. No Action diagnostic path exists yet, so diagnostics-on and diagnostics-off cost are identical. `benchmarks/ActionBenchmark.luau` compares validated manual input handling with Action execution for a fixed small object payload; it is a local comparison, not a universal performance claim.
+Action request cost is schema parsing plus constant-time rate-limit and cooldown table lookups, one request `Scope`, and domain execution. Scope lifecycle audit allocates an event only when a caller opts in; disabled scopes have no hook, telemetry, background loop, or polling cost. `benchmarks/ActionBenchmark.luau` compares validated manual input handling with Action execution for a fixed small object payload; it is a local comparison, not a universal performance claim.
 
 ## 13. Compatibility
 

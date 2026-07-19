@@ -120,6 +120,7 @@ Passing `Schema.instance` only proves reference shape and location. It does **no
 - Unknown object fields, non-finite numbers, unsupported datatypes, and unconfigured Instances are rejected.
 - Client failures expose stable codes, not stack traces or server state.
 - Each request transport dispatch owns a `Scope` and destroys it after completion.
+- `Scope` lifecycle audit is opt-in, server-only, and has no default telemetry or polling.
 
 Read [Security model](docs/SECURITY.md) before binding production remotes. Read [Architecture](docs/ARCHITECTURE.md) for contracts, constraints, and cost model.
 
@@ -128,7 +129,7 @@ Read [Security model](docs/SECURITY.md) before binding production remotes. Read 
 | Phase | Focus | Status |
 | --- | --- | --- |
 | 0.1 | Core: Result, Schema, Scope, Action, transport | Released |
-| 0.2 | Reliability: lifecycle helpers, fakes, diagnostics | Next |
+| 0.2 | Reliability: lifecycle helpers, fakes, diagnostics | Complete (Unreleased) |
 | 0.3 | Optional integration adapters | Planned |
 | 0.4+ | Transactions, generated contracts, CLI, Studio tooling | Planned |
 

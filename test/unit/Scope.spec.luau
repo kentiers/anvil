@@ -51,6 +51,30 @@ return function()
             assert(not didRejectRegistration, "destroyed scope must reject new resources")
         end)
 
+        it("reports opt-in lifecycle audit events", function()
+            local events: { Scope.AuditEvent } = {}
+            local root = Scope.new("Root", nil, {
+                audit = function(event: Scope.AuditEvent)
+                    table.insert(events, event)
+                end,
+            })
+            root:child("Child")
+            root:destroy()
+
+            assert(events[1].kind == "scope_destroyed", "child destruction must be audited")
+            assert(events[1].scopeName == "Root/Child", "child audit must report child scope")
+            assert(events[2].kind == "scope_destroyed", "root destruction must be audited")
+            assert(events[2].scopeName == "Root", "root audit must report root scope")
+
+            local didThrow = pcall(function()
+                root:defer(function() end)
+            end)
+            assert(not didThrow, "destroyed scope must retain its use-after-destroy error")
+            assert(events[3].kind == "scope_use_after_destroy", "use-after-destroy must be audited")
+            assert(events[3].scopeName == "Root", "diagnostic must report destroyed scope")
+            assert(events[3].operation == "defer", "diagnostic must report attempted operation")
+        end)
+
         it("drains cleanup after a failure", function()
             local failureEvents = {}
             local failingScope = Scope.new("Failing")

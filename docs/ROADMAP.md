@@ -69,7 +69,7 @@
 
 ## Phase 2 — Reliability 0.2.0
 
-**Status:** Next.
+**Status:** Complete (Unreleased).
 
 Player and character helpers target Roblox's native lifecycle only. They must not encode teams, inventories, avatars, game modes, or other consumer domain rules.
 
