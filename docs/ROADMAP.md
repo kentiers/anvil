@@ -1,7 +1,7 @@
 # Anvil Roadmap
 
-**Status:** Draft
-**Version:** 0.1
+**Status:** Active
+**Current public line:** `0.1.x`
 
 ## Roadmap Rules
 
@@ -10,6 +10,8 @@
 - New features require a documented Roblox-specific problem.
 - Rust CLI and Studio plugin remain after runtime API stability.
 - Performance claims require repeatable benchmarks.
+- Core deliverables solve cross-project Roblox boundary or lifecycle problems; game rules, economy, progression, and moderation stay in consumer code.
+- Native lifecycle helpers and named adapters remain opt-in integrations. They must not become a mandatory project stack or imply endorsement of one game architecture.
 
 ## Phase 0 — Contract and Prototype
 
@@ -69,44 +71,45 @@
 
 **Status:** Next.
 
+Player and character helpers target Roblox's native lifecycle only. They must not encode teams, inventories, avatars, game modes, or other consumer domain rules.
+
 ### Deliverables
 
-- player scope helper;
-- character scope helper;
+- optional Player lifecycle Scope helper;
+- optional Character child-Scope helper;
 - Result combinators;
 - fake clock;
 - fake transport;
-- fake player fixture;
-- development lifecycle diagnostics;
-- audit hooks;
+- fake Player fixture;
+- development-only lifecycle diagnostics;
+- opt-in audit hooks with no default telemetry;
 - stable error catalog.
 
 ### Exit gate
 
-- respawn lifecycle test passes;
-- player removal lifecycle test passes;
-- use-after-destroy diagnostics work;
-- deterministic cooldown tests pass;
+- Player lifecycle Scope test passes for `Players.PlayerRemoving`;
+- Character child-Scope replacement test passes for `Player.CharacterAdded`;
+- use-after-destroy diagnostics work in development mode;
+- deterministic cooldown tests pass with injected clock;
 - error codes documented.
 
 ## Phase 3 — Integration 0.3.0
 
 ### Deliverables
 
-- ByteNet adapter;
-- Remo adapter;
-- Replica adapter;
-- ProfileStore adapter;
-- Scribe adapter;
-- Trove adapter;
-- adapter examples kept outside core package behavior.
+- adapter contract and isolated integration-test kit;
+- optional transport adapter examples, initially ByteNet and Remo;
+- optional state and persistence adapter examples, initially Replica, ProfileStore, and Scribe;
+- optional lifecycle adapter example, initially Trove;
+- adapter examples remain outside core package behavior.
 
 ### Exit gate
 
-- each adapter has isolated integration tests;
-- core remains usable without adapters;
+- each shipped adapter has isolated integration tests;
+- core remains usable with no adapter installed;
 - no adapter changes core action semantics;
-- failure behavior documented per adapter.
+- adapter failure behavior and ownership boundary are documented;
+- no adapter becomes a required default stack.
 
 ## Phase 4 — Transactions and Replay 0.4.0
 

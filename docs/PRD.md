@@ -161,20 +161,18 @@ Only validated input reaches `execute`.
 
 ### Release 0.2+
 
-- player and character scope helpers;
-- audit hooks;
-- fake clock;
-- fake transport;
+- optional Player and Character lifecycle Scope helpers with no game-domain policy;
+- audit hooks with no default telemetry;
+- fake clock, fake transport, and fake Player fixture;
 - Result combinators;
-- transaction for Anvil-managed mutations.
+- transaction for explicitly Anvil-managed server mutations.
 
 ### Release 0.3+
 
-- ByteNet adapter;
-- Remo adapter;
-- Replica adapter;
-- ProfileStore adapter;
-- Scribe adapter;
+- adapter contract and isolated integration-test kit;
+- optional transport adapters such as ByteNet and Remo;
+- optional state and persistence adapters such as Replica, ProfileStore, and Scribe;
+- optional cleanup adapter such as Trove;
 - generated client/server contracts.
 
 ### Separate projects
