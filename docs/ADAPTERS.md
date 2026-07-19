@@ -19,6 +19,10 @@ Every handler enters `ActionDispatch`: request Scope, schema validation, rate li
 
 Adapters never create stores, remotes, replicas, or player sessions. Domain code retains authority over persistence, replication visibility, and external effects.
 
+### Replica distribution
+
+`Anvil.Adapters.Replica.own` accepts a caller-created Replica with `Destroy`. ReplicaServer and ReplicaClient package layouts differ across upstream distributions; Anvil does not pin, bundle, or select one. Pin a matched server/client distribution in consumer code and test its own replication topology there.
+
 ## Tests
 
 `test/unit/Adapters.spec.luau` is an isolated contract kit. It proves payload validation and safe serialization survive transport callbacks, each owned resource releases exactly once, and Scribe load failure has a stable code. Consumer projects must also run their own real-package integration test after pinning a target package version.
