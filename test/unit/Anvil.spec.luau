@@ -15,6 +15,8 @@ return function()
             assert(type(Anvil.Result.ok) == "function", "package root must export Result")
             assert(type(Anvil.Error.new) == "function", "package root must export Error")
             assert(type(Anvil.Test.FakeClock.new) == "function", "package root must export test helpers")
+            assert(type(Anvil.Lifecycle.PlayerScope.new) == "function", "package root must export lifecycle helpers")
+            assert(type(Anvil.Test.FakePlayer.new) == "function", "package root must export player fixture")
         end)
     end)
 end

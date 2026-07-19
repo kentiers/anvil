@@ -130,6 +130,8 @@ Invariants:
 
 `Scope` does not infer ownership or cleanup behavior from arbitrary values. Resource cleanup callbacks must be supplied explicitly.
 
+`Lifecycle.PlayerScope.new(player, Players.PlayerRemoving)` binds an explicit player root Scope. It creates one current Character Scope, destroys the prior Character Scope on `CharacterAdded`, and destroys both scopes when that player is removed. It carries no team, inventory, avatar, or game-mode policy.
+
 ## 7. Schema Contract
 
 ```lua
