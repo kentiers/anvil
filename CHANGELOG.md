@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 ## [Unreleased]
 
 ### Added
+- Unreleased `Anvil.Test.FakeClock` for deterministic, monotonic time in test code.
 
 ### Changed
 

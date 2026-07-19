@@ -3,6 +3,7 @@
 local ServerScriptService = game:GetService("ServerScriptService")
 local Anvil = ServerScriptService.Anvil
 local RateLimit = require(Anvil.Action.RateLimit)
+local FakeClock = require(Anvil.Test.FakeClock)
 
 return function()
     local testEnvironment = getfenv()
@@ -11,9 +12,9 @@ return function()
 
     describe("RateLimit", function()
         it("refills deterministic per-player token buckets", function()
-            local now = 0
+            local clock = FakeClock.new()
             local rateLimit = RateLimit.new(2, 1, function()
-                return now
+                return clock:now()
             end)
             local player = {}
 
@@ -30,10 +31,10 @@ return function()
                 )
             end
 
-            now = 0.5
+            clock:advance(0.5)
             assert(not rateLimit:check(player).ok, "partial refill must not permit a request")
 
-            now = 1
+            clock:advance(0.5)
             assert(rateLimit:check(player).ok, "full token refill must permit a request")
 
             local otherPlayer = {}
