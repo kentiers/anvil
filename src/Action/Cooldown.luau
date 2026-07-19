@@ -1,6 +1,7 @@
 --!strict
 
 local Result = require(script.Parent.Parent.Core.Result)
+local ErrorCode = require(script.Parent.Parent.Core.ErrorCode)
 
 local Cooldown = {}
 
@@ -28,7 +29,7 @@ function Cooldown.new(duration: number, clock: Clock): Cooldown
             local details: { [string]: unknown } = {
                 remaining = expires - now,
             }
-            return Result.err("ACTION_COOLDOWN", details)
+            return Result.err(ErrorCode.ACTION_COOLDOWN, details)
         end
 
         expiresAt[player] = now + duration

@@ -1,6 +1,7 @@
 --!strict
 
 local Result = require(script.Parent.Parent.Core.Result)
+local ErrorCode = require(script.Parent.Parent.Core.ErrorCode)
 
 local RateLimit = {}
 
@@ -44,7 +45,7 @@ function RateLimit.new(capacity: number, refillPerSecond: number, clock: Clock):
             local details: { [string]: unknown } = {
                 retryAfter = (1 - bucket.tokens) / refillPerSecond,
             }
-            return Result.err("ACTION_RATE_LIMITED", details)
+            return Result.err(ErrorCode.ACTION_RATE_LIMITED, details)
         end
 
         bucket.tokens -= 1

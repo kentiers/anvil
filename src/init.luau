@@ -2,6 +2,7 @@
 
 local Result = require(script.Core.Result)
 local Error = require(script.Core.Error)
+local ErrorCode = require(script.Core.ErrorCode)
 local Schema = require(script.Schema.Schema)
 local Scope = require(script.Core.Scope)
 local Action = require(script.Action.Action)
@@ -11,6 +12,7 @@ local Lifecycle = require(script.Lifecycle)
 return {
     Error = Error,
     Result = Result,
+    ErrorCode = ErrorCode,
     Schema = Schema,
     Scope = Scope,
     Action = Action,

@@ -2,6 +2,7 @@
 
 local Error = require(script.Parent.Parent.Core.Error)
 local Result = require(script.Parent.Parent.Core.Result)
+local ErrorCode = require(script.Parent.Parent.Core.ErrorCode)
 
 local Schema = {}
 local TYPE_VECTOR3 = "Vector3"
@@ -96,10 +97,10 @@ local function new(base: BaseValidator): Validator
     function validator.minLength(self: Validator, minimum: number): Validator
         table.insert(checks, function(value: unknown, path: string): ResultValue
             if type(value) ~= "string" then
-                return invalid("SCHEMA_INTERNAL_TYPE", path, "string", type(value))
+                return invalid(ErrorCode.SCHEMA_INTERNAL_TYPE, path, "string", type(value))
             end
             if #value < minimum then
-                return constraintFailure("SCHEMA_STRING_TOO_SHORT", path, value, minimum, nil)
+                return constraintFailure(ErrorCode.SCHEMA_STRING_TOO_SHORT, path, value, minimum, nil)
             end
             return Result.ok(value)
         end)
@@ -109,10 +110,10 @@ local function new(base: BaseValidator): Validator
     function validator.maxLength(self: Validator, maximum: number): Validator
         table.insert(checks, function(value: unknown, path: string): ResultValue
             if type(value) ~= "string" then
-                return invalid("SCHEMA_INTERNAL_TYPE", path, "string", type(value))
+                return invalid(ErrorCode.SCHEMA_INTERNAL_TYPE, path, "string", type(value))
             end
             if #value > maximum then
-                return constraintFailure("SCHEMA_STRING_TOO_LONG", path, value, nil, maximum)
+                return constraintFailure(ErrorCode.SCHEMA_STRING_TOO_LONG, path, value, nil, maximum)
             end
             return Result.ok(value)
         end)
@@ -122,10 +123,10 @@ local function new(base: BaseValidator): Validator
     function validator.between(self: Validator, minimum: number, maximum: number): Validator
         table.insert(checks, function(value: unknown, path: string): ResultValue
             if type(value) ~= "number" then
-                return invalid("SCHEMA_INTERNAL_TYPE", path, "number", type(value))
+                return invalid(ErrorCode.SCHEMA_INTERNAL_TYPE, path, "number", type(value))
             end
             if value < minimum or value > maximum then
-                return constraintFailure("SCHEMA_NUMBER_OUT_OF_RANGE", path, value, minimum, maximum)
+                return constraintFailure(ErrorCode.SCHEMA_NUMBER_OUT_OF_RANGE, path, value, minimum, maximum)
             end
             return Result.ok(value)
         end)
@@ -138,7 +139,7 @@ end
 function Schema.string(): Validator
     return new(function(value: unknown, path: string): ResultValue
         if type(value) ~= "string" then
-            return invalid("SCHEMA_TYPE_MISMATCH", path, "string", type(value))
+            return invalid(ErrorCode.SCHEMA_TYPE_MISMATCH, path, "string", type(value))
         end
         return Result.ok(value)
     end)
@@ -147,7 +148,7 @@ end
 function Schema.number(): Validator
     return new(function(value: unknown, path: string): ResultValue
         if type(value) ~= "number" or not isFinite(value) then
-            return invalid("SCHEMA_TYPE_MISMATCH", path, "number", type(value))
+            return invalid(ErrorCode.SCHEMA_TYPE_MISMATCH, path, "number", type(value))
         end
         return Result.ok(value)
     end)
@@ -156,7 +157,7 @@ end
 function Schema.integer(): Validator
     return new(function(value: unknown, path: string): ResultValue
         if type(value) ~= "number" or not isFinite(value) or value % 1 ~= 0 then
-            return invalid("SCHEMA_INTEGER_REQUIRED", path, "integer", type(value))
+            return invalid(ErrorCode.SCHEMA_INTEGER_REQUIRED, path, "integer", type(value))
         end
         return Result.ok(value)
     end)
@@ -165,7 +166,7 @@ end
 function Schema.boolean(): Validator
     return new(function(value: unknown, path: string): ResultValue
         if type(value) ~= "boolean" then
-            return invalid("SCHEMA_TYPE_MISMATCH", path, "boolean", type(value))
+            return invalid(ErrorCode.SCHEMA_TYPE_MISMATCH, path, "boolean", type(value))
         end
         return Result.ok(value)
     end)
@@ -174,12 +175,12 @@ end
 function Schema.vector3(): Validator
     return new(function(value: unknown, path: string): ResultValue
         if typeof(value) ~= TYPE_VECTOR3 then
-            return invalid("SCHEMA_VECTOR3_REQUIRED", path, "Vector3", typeof(value))
+            return invalid(ErrorCode.SCHEMA_VECTOR3_REQUIRED, path, "Vector3", typeof(value))
         end
 
         local vector = value :: any
         if not isFinite(vector.X) or not isFinite(vector.Y) or not isFinite(vector.Z) then
-            return invalid("SCHEMA_VECTOR3_REQUIRED", path, "finite Vector3", "non-finite Vector3")
+            return invalid(ErrorCode.SCHEMA_VECTOR3_REQUIRED, path, "finite Vector3", "non-finite Vector3")
         end
         return Result.ok(value)
     end)
@@ -188,7 +189,7 @@ end
 function Schema.cframe(): Validator
     return new(function(value: unknown, path: string): ResultValue
         if typeof(value) ~= TYPE_CFRAME then
-            return invalid("SCHEMA_CFRAME_REQUIRED", path, "CFrame", typeof(value))
+            return invalid(ErrorCode.SCHEMA_CFRAME_REQUIRED, path, "CFrame", typeof(value))
         end
 
         local x, y, z, r00, r01, r02, r10, r11, r12, r20, r21, r22 = (value :: any):GetComponents()
@@ -208,7 +209,7 @@ function Schema.cframe(): Validator
                 and isFinite(r22)
             )
         then
-            return invalid("SCHEMA_CFRAME_REQUIRED", path, "finite CFrame", "non-finite CFrame")
+            return invalid(ErrorCode.SCHEMA_CFRAME_REQUIRED, path, "finite CFrame", "non-finite CFrame")
         end
         return Result.ok(value)
     end)
@@ -217,12 +218,12 @@ end
 function Schema.color3(): Validator
     return new(function(value: unknown, path: string): ResultValue
         if typeof(value) ~= TYPE_COLOR3 then
-            return invalid("SCHEMA_COLOR3_REQUIRED", path, "Color3", typeof(value))
+            return invalid(ErrorCode.SCHEMA_COLOR3_REQUIRED, path, "Color3", typeof(value))
         end
 
         local color = value :: any
         if not isFinite(color.R) or not isFinite(color.G) or not isFinite(color.B) then
-            return invalid("SCHEMA_COLOR3_REQUIRED", path, "finite Color3", "non-finite Color3")
+            return invalid(ErrorCode.SCHEMA_COLOR3_REQUIRED, path, "finite Color3", "non-finite Color3")
         end
         return Result.ok(value)
     end)
@@ -235,12 +236,12 @@ function Schema.enumItem(enumType: unknown?): Validator
 
     return new(function(value: unknown, path: string): ResultValue
         if typeof(value) ~= TYPE_ENUM_ITEM then
-            return invalid("SCHEMA_ENUM_ITEM_REQUIRED", path, "EnumItem", typeof(value))
+            return invalid(ErrorCode.SCHEMA_ENUM_ITEM_REQUIRED, path, "EnumItem", typeof(value))
         end
 
         local item = value :: any
         if enumType ~= nil and item.EnumType ~= enumType then
-            return invalid("SCHEMA_ENUM_ITEM_REQUIRED", path, "configured Enum", tostring(item.EnumType))
+            return invalid(ErrorCode.SCHEMA_ENUM_ITEM_REQUIRED, path, "configured Enum", tostring(item.EnumType))
         end
         return Result.ok(value)
     end)
@@ -255,16 +256,21 @@ function Schema.instance(policy: InstancePolicy): Validator
 
     return new(function(value: unknown, path: string): ResultValue
         if typeof(value) ~= TYPE_INSTANCE then
-            return invalid("SCHEMA_INSTANCE_REQUIRED", path, "Instance", typeof(value))
+            return invalid(ErrorCode.SCHEMA_INSTANCE_REQUIRED, path, "Instance", typeof(value))
         end
 
         local instance = value :: any
         local ancestor = policy.ancestor :: any
         if not isAllowedClass(instance, policy.classNames) then
-            return invalid("SCHEMA_INSTANCE_CLASS", path, "allowed Instance class", instance.ClassName)
+            return invalid(ErrorCode.SCHEMA_INSTANCE_CLASS, path, "allowed Instance class", instance.ClassName)
         end
         if instance ~= ancestor and not instance:IsDescendantOf(ancestor) then
-            return invalid("SCHEMA_INSTANCE_ANCESTRY", path, "allowed Instance ancestry", "outside configured ancestry")
+            return invalid(
+                ErrorCode.SCHEMA_INSTANCE_ANCESTRY,
+                path,
+                "allowed Instance ancestry",
+                "outside configured ancestry"
+            )
         end
         return Result.ok(value)
     end)
@@ -282,7 +288,7 @@ end
 function Schema.array(inner: Validator): Validator
     return new(function(value: unknown, path: string): ResultValue
         if type(value) ~= "table" then
-            return invalid("SCHEMA_TYPE_MISMATCH", path, "array", type(value))
+            return invalid(ErrorCode.SCHEMA_TYPE_MISMATCH, path, "array", type(value))
         end
 
         local arrayValue = value :: { [number]: unknown }
@@ -290,7 +296,7 @@ function Schema.array(inner: Validator): Validator
         local normalized = {}
         for key in arrayValue do
             if key % 1 ~= 0 or key < 1 or key > length then
-                return invalid("SCHEMA_ARRAY_REQUIRED", path, "array", "sparse table")
+                return invalid(ErrorCode.SCHEMA_ARRAY_REQUIRED, path, "array", "sparse table")
             end
         end
 
@@ -309,13 +315,13 @@ end
 function Schema.object(fields: { [string]: Validator }): Validator
     return new(function(value: unknown, path: string): ResultValue
         if type(value) ~= "table" then
-            return invalid("SCHEMA_TYPE_MISMATCH", path, "object", type(value))
+            return invalid(ErrorCode.SCHEMA_TYPE_MISMATCH, path, "object", type(value))
         end
 
         local objectValue = value :: { [string]: unknown }
         for key in value :: { [unknown]: unknown } do
             if type(key) ~= "string" or fields[key] == nil then
-                return invalid("SCHEMA_UNKNOWN_FIELD", path, "declared field", tostring(key))
+                return invalid(ErrorCode.SCHEMA_UNKNOWN_FIELD, path, "declared field", tostring(key))
             end
         end
 
@@ -340,7 +346,7 @@ function Schema.union(options: { Validator }): Validator
             end
         end
 
-        return invalid("SCHEMA_UNION_MISMATCH", path, "one of union options", type(value))
+        return invalid(ErrorCode.SCHEMA_UNION_MISMATCH, path, "one of union options", type(value))
     end)
 end
 
