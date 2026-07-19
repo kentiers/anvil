@@ -168,6 +168,7 @@ local scope = Scope.new("Player", player, {
 ```
 
 Each enabled event contains only `kind`, `scopeName`, and attempted `operation` when relevant. Child scopes inherit the hook. No hook, telemetry, event table, background loop, or polling exists by default. Callers enable this only in development; audit callbacks remain server-side and must not receive client payloads or secrets.
+Audit callback errors propagate as programmer faults; destruction callbacks run after resource cleanup. Keep callbacks non-throwing and server-only.
 
 `Lifecycle.PlayerScope.new(player, Players.PlayerRemoving)` binds an explicit player root Scope. It creates one current Character Scope, destroys the prior Character Scope on `CharacterAdded`, and destroys both scopes when that player is removed. It carries no team, inventory, avatar, or game-mode policy.
 

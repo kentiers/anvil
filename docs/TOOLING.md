@@ -47,6 +47,16 @@ powershell -ExecutionPolicy Bypass -File scripts/benchmark-action.ps1
 
 This benchmark reports one local measurement only. Record manual comparison, payload size, and diagnostics state before making a performance claim.
 
+Measure Scope destruction with lifecycle audit disabled and enabled:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/benchmark-scope-audit.ps1
+```
+
+Record both measurements on same machine. Enabled audit intentionally allocates one bounded event table per emitted event; disabled Scope destruction has no audit callback or event allocation.
+
+Recorded 2026-07-18 local baseline: 10,000 Scope create/destroy cycles measured 229,333 ops/s disabled and 322,156 ops/s with audit enabled. One run only; difference is measurement noise, not a speed claim.
+
 Measure Roblox datatype and Instance-policy schema overhead:
 
 ```bash
