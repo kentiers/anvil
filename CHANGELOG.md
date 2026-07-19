@@ -9,6 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 ### Added
 - Unreleased `Anvil.Test.FakeClock` for deterministic, monotonic time in test code.
 - Unreleased `Anvil.Lifecycle.PlayerScope` and `Anvil.Test.FakePlayer`/`FakeSignal` for deterministic native lifecycle tests.
+- Unreleased `Anvil.ErrorCode`, frozen constants for every stable Anvil-emitted Action and Schema error code.
 
 ### Changed
 

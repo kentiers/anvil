@@ -105,6 +105,33 @@ Result.unwrapOr(result, fallback)
 
 Methods must avoid Promise allocation.
 
+### Stable error codes
+
+`Anvil.ErrorCode` is a frozen catalog for every stable error code emitted by Anvil. Consumers branch on these constants instead of copied string literals. Constant values are transport-safe wire contracts and cannot change in a compatible release.
+
+Only Anvil-emitted codes belong in this catalog. Errors returned by consumer `authorize` or `execute` callbacks remain application-defined.
+
+```lua
+Anvil.ErrorCode.ACTION_COOLDOWN
+Anvil.ErrorCode.ACTION_RATE_LIMITED
+Anvil.ErrorCode.SCHEMA_TYPE_MISMATCH
+Anvil.ErrorCode.SCHEMA_INTERNAL_TYPE
+Anvil.ErrorCode.SCHEMA_INTEGER_REQUIRED
+Anvil.ErrorCode.SCHEMA_STRING_TOO_SHORT
+Anvil.ErrorCode.SCHEMA_STRING_TOO_LONG
+Anvil.ErrorCode.SCHEMA_NUMBER_OUT_OF_RANGE
+Anvil.ErrorCode.SCHEMA_VECTOR3_REQUIRED
+Anvil.ErrorCode.SCHEMA_CFRAME_REQUIRED
+Anvil.ErrorCode.SCHEMA_COLOR3_REQUIRED
+Anvil.ErrorCode.SCHEMA_ENUM_ITEM_REQUIRED
+Anvil.ErrorCode.SCHEMA_INSTANCE_REQUIRED
+Anvil.ErrorCode.SCHEMA_INSTANCE_CLASS
+Anvil.ErrorCode.SCHEMA_INSTANCE_ANCESTRY
+Anvil.ErrorCode.SCHEMA_ARRAY_REQUIRED
+Anvil.ErrorCode.SCHEMA_UNKNOWN_FIELD
+Anvil.ErrorCode.SCHEMA_UNION_MISMATCH
+```
+
 ## 6. Scope Contract
 
 ```lua
