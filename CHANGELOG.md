@@ -13,6 +13,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 
 ### Fixed
 
+## [0.3.0] - 2026-07-19
+
+### Added
+- Optional adapters for ByteNet, Remo, Replica, ProfileStore, Scribe, and Trove; caller ownership preserved and core remains dependency-free.
+
 ### Security
 
 ## [0.2.0] - 2026-07-18
