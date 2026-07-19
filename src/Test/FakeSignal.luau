@@ -2,7 +2,7 @@
 
 local FakeSignal = {}
 
-type Callback = (value: unknown) -> ()
+type Callback = (...unknown) -> ()
 type Listener = {
     callback: Callback,
 }
@@ -13,7 +13,7 @@ export type Connection = {
 
 export type Signal = {
     Connect: (self: Signal, callback: Callback) -> Connection,
-    fire: (self: Signal, value: unknown) -> (),
+    fire: (self: Signal, ...unknown) -> (),
 }
 
 function FakeSignal.new(): Signal
@@ -35,9 +35,9 @@ function FakeSignal.new(): Signal
         return connection
     end
 
-    function signal.fire(_self: Signal, value: unknown)
+    function signal.fire(_self: Signal, ...: unknown)
         for _, listener in listeners do
-            listener.callback(value)
+            listener.callback(...)
         end
     end
 

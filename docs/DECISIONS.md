@@ -77,3 +77,11 @@
 **Reason:** Core modules use Luau syntax and Roblox instance paths. Lemur-based execution does not faithfully execute that environment. Real Studio tests provide correct Luau behavior and actionable failure output.
 
 **Consequence:** Local test commands require Roblox Studio. GitHub-hosted CI runs static checks only because Studio installation and plugin execution require an interactive desktop session. `scripts/test.ps1` translates TestEZ's `failureCount` into a nonzero process exit code.
+
+## ADR-012 — Opt-In Lifecycle Audit
+
+**Decision:** `Scope` accepts an optional lifecycle audit hook. It emits only destruction and use-after-destroy events, and has no configured default reporter.
+
+**Reason:** Development diagnostics need deterministic, inspectable events without starting telemetry, polling, or a global singleton in production.
+
+**Consequence:** Audit event allocation occurs only when a caller supplies a hook. Callers keep reporting server-side and enable it only for development diagnostics.
