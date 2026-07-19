@@ -212,17 +212,17 @@ Rollback only covers mutations registered with Anvil. External effects require e
 
 ## 11. Testing Architecture
 
-Core tests use injected fakes:
+Core tests use injected fakes rather than live platform services:
 
 ```text
-TestClock
-TestTransport
-TestPlayer
-TestRng
-TestScope
+FakeClock
+FakeTransport
+FakePlayer
+FakeRng
+FakeScope
 ```
 
-Tests must not call live DataStoreService, MarketplaceService, or real client networking.
+`Anvil.Test.FakeClock` starts at a finite supplied time or zero, advances only by finite non-negative intervals, and can supply injected clock callbacks to deterministic tests. Tests must not call live DataStoreService, MarketplaceService, or real client networking.
 
 ## 12. Performance Rules
 

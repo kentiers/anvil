@@ -5,6 +5,7 @@ local Error = require(script.Core.Error)
 local Schema = require(script.Schema.Schema)
 local Scope = require(script.Core.Scope)
 local Action = require(script.Action.Action)
+local Test = require(script.Test)
 
 return {
     Error = Error,
@@ -12,4 +13,5 @@ return {
     Schema = Schema,
     Scope = Scope,
     Action = Action,
+    Test = Test,
 }

@@ -3,6 +3,7 @@
 local ServerScriptService = game:GetService("ServerScriptService")
 local Anvil = ServerScriptService.Anvil
 local Cooldown = require(Anvil.Action.Cooldown)
+local FakeClock = require(Anvil.Test.FakeClock)
 
 return function()
     local testEnvironment = getfenv()
@@ -11,15 +12,15 @@ return function()
 
     describe("Cooldown", function()
         it("enforces a deterministic per-player boundary", function()
-            local now = 0
+            local clock = FakeClock.new()
             local cooldown = Cooldown.new(2, function()
-                return now
+                return clock:now()
             end)
             local player = {}
 
             assert(cooldown:check(player).ok, "first request must pass")
 
-            now = 1.5
+            clock:advance(1.5)
             local blocked = cooldown:check(player)
             assert(not blocked.ok, "request before expiry must fail")
             if not blocked.ok then
@@ -30,7 +31,7 @@ return function()
                 )
             end
 
-            now = 2
+            clock:advance(0.5)
             assert(cooldown:check(player).ok, "request at expiry must pass")
             cooldown:clear(player)
             assert(cooldown:check(player).ok, "cleared player cooldown must pass")
