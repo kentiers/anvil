@@ -1,6 +1,7 @@
 --!strict
 
 export type ErrorCode = {
+    ADAPTER_SCRIBE_DATA_UNAVAILABLE: string,
     ACTION_COOLDOWN: string,
     ACTION_RATE_LIMITED: string,
     SCHEMA_ARRAY_REQUIRED: string,
@@ -22,6 +23,7 @@ export type ErrorCode = {
 }
 
 local ErrorCode = table.freeze({
+    ADAPTER_SCRIBE_DATA_UNAVAILABLE = "ADAPTER_SCRIBE_DATA_UNAVAILABLE",
     ACTION_COOLDOWN = "ACTION_COOLDOWN",
     ACTION_RATE_LIMITED = "ACTION_RATE_LIMITED",
     SCHEMA_ARRAY_REQUIRED = "SCHEMA_ARRAY_REQUIRED",

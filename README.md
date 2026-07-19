@@ -150,6 +150,7 @@ The consumer smoke test downloads exact public Wally package version, maps it se
 - [Security model](docs/SECURITY.md)
 - [Architecture and API contracts](docs/ARCHITECTURE.md)
 - [Tooling and verification](docs/TOOLING.md)
+- [Optional adapter contracts](docs/ADAPTERS.md)
 - [Changelog](CHANGELOG.md)
 - [0.2.0 migration notes](docs/MIGRATION-0.2.0.md)
 - [Release notes](https://github.com/kentiers/anvil/releases)

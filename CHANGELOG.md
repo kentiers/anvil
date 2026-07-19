@@ -7,6 +7,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 ## [Unreleased]
 
 ### Added
+- Optional adapters for ByteNet, Remo, Replica, ProfileStore, Scribe, and Trove; caller ownership preserved and core remains dependency-free.
 
 ### Changed
 
