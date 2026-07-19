@@ -37,7 +37,7 @@ Anvil is a server-realm Wally package. Pin an exact version:
 
 ```toml
 [server-dependencies]
-Anvil = "kentiers/anvil@0.3.0"
+Anvil = "kentiers/anvil@0.2.0"
 ```
 ```bash
 wally install
