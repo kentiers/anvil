@@ -94,7 +94,7 @@ Player and character helpers target Roblox's native lifecycle only. They must no
 - error codes documented.
 
 ## Phase 3 — Integration 0.3.0
-**Status:** Implemented (`0.3.0`, pending release).
+**Status:** Released (`0.3.0`).
 
 ### Deliverables
 
