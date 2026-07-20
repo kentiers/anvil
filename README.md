@@ -37,7 +37,7 @@ Anvil is a server-realm Wally package. Pin an exact version:
 
 ```toml
 [server-dependencies]
-Anvil = "kentiers/anvil@0.1.3"
+Anvil = "kentiers/anvil@0.2.0"
 ```
 ```bash
 wally install
@@ -130,7 +130,7 @@ Read [Security model](docs/SECURITY.md) before binding production remotes. Read 
 | --- | --- | --- |
 | 0.1 | Core: Result, Schema, Scope, Action, transport | Released |
 | 0.2 | Reliability: lifecycle helpers, fakes, diagnostics | Released (`0.2.0`) |
-| 0.3 | Optional integration adapters | Planned |
+| 0.3 | Optional integration adapters | Implemented (`0.3.0`, pending release) |
 | 0.4+ | Transactions, generated contracts, CLI, Studio tooling | Planned |
 
 Full scope and exit gates: [ROADMAP.md](docs/ROADMAP.md).
@@ -150,8 +150,10 @@ The consumer smoke test downloads exact public Wally package version, maps it se
 - [Security model](docs/SECURITY.md)
 - [Architecture and API contracts](docs/ARCHITECTURE.md)
 - [Tooling and verification](docs/TOOLING.md)
+- [Optional adapter contracts](docs/ADAPTERS.md)
 - [Changelog](CHANGELOG.md)
 - [0.2.0 migration notes](docs/MIGRATION-0.2.0.md)
+- [0.3.0 migration notes](docs/MIGRATION-0.3.0.md)
 - [Release notes](https://github.com/kentiers/anvil/releases)
 
 ## Contributing and support

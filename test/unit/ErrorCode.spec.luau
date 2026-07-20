@@ -12,6 +12,7 @@ return function()
     describe("ErrorCode", function()
         it("publishes stable emitted error codes", function()
             local expected = {
+                ADAPTER_SCRIBE_DATA_UNAVAILABLE = "ADAPTER_SCRIBE_DATA_UNAVAILABLE",
                 ACTION_COOLDOWN = "ACTION_COOLDOWN",
                 ACTION_RATE_LIMITED = "ACTION_RATE_LIMITED",
                 SCHEMA_ARRAY_REQUIRED = "SCHEMA_ARRAY_REQUIRED",
