@@ -239,18 +239,16 @@ local binding = transport:bindEvent(remoteEvent, action, services)
 
 ## 10. State and Transaction Boundary
 
-State and transaction APIs are not required for 0.1 action execution. They must not be implemented as a hidden global store.
-
-Later state contract:
+Transactions are explicit and local to caller-owned managed state. They must not become a hidden global store.
 
 ```lua
-local state = State.new(defaultValue, scope)
-local tx = state:transaction()
-tx:set({"Value"}, 100)
-tx:commit()
+local transaction = Transaction.new()
+transaction:set(state, "Value", 100)
+transaction:compensate(reverseExternalEffect)
+local result = transaction:commit()
 ```
 
-Rollback only covers mutations registered with Anvil. External effects require explicit compensation.
+Rollback restores only mutations registered with Anvil. External effects require explicit compensation and are never falsely reported as automatically rolled back. Replay records contain deterministic input, request ID, clock, RNG sequence, and Result; replay never executes external effects.
 
 ## 11. Testing Architecture
 

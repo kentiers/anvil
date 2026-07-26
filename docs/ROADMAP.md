@@ -113,6 +113,7 @@ Player and character helpers target Roblox's native lifecycle only. They must no
 - no adapter becomes a required default stack.
 
 ## Phase 4 — Transactions and Replay 0.4.0
+**Status:** Implemented (`0.4.0`, pending release).
 
 ### Deliverables
 
