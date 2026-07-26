@@ -8,6 +8,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and vers
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.4.0] - 2026-07-26
+
+### Added
+
 - Managed mutation transactions with explicit compensation hooks.
 - Deterministic request IDs, audit records, replay records, and `FakeRng` integration.
 
